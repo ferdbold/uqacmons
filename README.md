@@ -1,7 +1,9 @@
 # UQACmons
 
-*Frédéric Bolduc*
-*Alexis Lessard*
-*Marc-André Fortin-Leclerc*
-*Patrick Tremblay*
+**Frédéric Bolduc**
 
+**Alexis Lessard**
+
+**Marc-André Fortin-Leclerc**
+
+**Patrick Tremblay**
