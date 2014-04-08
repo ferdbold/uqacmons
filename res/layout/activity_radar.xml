@@ -1,20 +1,54 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation ="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".RadarActivity" >
+    android:background="@drawable/pokedex"
+    tools:context=".RadarActivity"  >
 
-    <Button
+
+    <ImageButton
         android:id="@+id/b_uqacpedia"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginLeft="-15dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="-15dp"
+        android:alpha="0"
+        android:background="@null"
+        android:contentDescription="@string/Pokedex"
+        android:gravity="center_vertical|center_horizontal|left"
+        android:src="@drawable/pokedex_bouton" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+	<ImageView
+        android:id="@+id/blueBip"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="200dp"
+        android:src="@drawable/pokedex_bouton" />
+    <ImageView
+        android:id="@+id/redBip"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="200dp"
+        android:src="@drawable/pokedex_bouton2" />
+    <Button
+        android:id="@+id/b_flash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center_vertical|center_horizontal|left"
-        android:text="UqacmonPedia" />
+        android:text="Button" 
+        />
+    </RelativeLayout>
+    
 
-</RelativeLayout>
+</LinearLayout>

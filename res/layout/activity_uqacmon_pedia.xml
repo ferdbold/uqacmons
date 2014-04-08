@@ -1,38 +1,36 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".UqacmonPedia" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  android:background="@drawable/pokedex"
+  tools:context=".UqacmonPedia"  >
 
-   <Button
-       android:id="@+id/b_radar"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentLeft="true"
-       android:layout_alignParentTop="true"
-       android:gravity="center_vertical|center_horizontal|left"
-       android:text="Radar" />
+    <ImageButton
+        android:id="@+id/b_radar"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginLeft="-0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="-0dp"
+        android:alpha="0"
+        android:background="@null"
+        android:contentDescription="@string/Pokedex"
+        android:gravity="center_vertical|center_horizontal|left"
+        android:src="@drawable/pokedex_bouton" />
 
     <ListView
         android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/b_radar"
-        android:layout_below="@+id/b_radar" >
+        android:layout_width="255dp"
+        android:layout_height="265dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="25dp" >
+
     </ListView>
+    
+</LinearLayout>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/b_radar"
-        android:layout_alignBottom="@+id/b_radar"
-        android:layout_alignRight="@+id/listView1"
-        android:text="UqacmonPedia"
-        android:textSize="24sp" />
-
-</RelativeLayout>

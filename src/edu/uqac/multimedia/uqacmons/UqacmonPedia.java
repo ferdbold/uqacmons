@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class UqacmonPedia extends ListActivity {
@@ -21,15 +22,17 @@ public class UqacmonPedia extends ListActivity {
     ArrayAdapter<String> adapter;
     
     //Variables
-	private Button Radar;
-	List<String> tableauNotes;
+	private ImageButton Radar;
+	List<String> tableauUqacmons;
 	
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_uqacmon_pedia);
-		
-		Radar = (Button) findViewById(R.id.b_radar);
+		//Get UI
+		Radar = (ImageButton) findViewById(R.id.b_radar);
+		//Set variables 
+		tableauUqacmons = new ArrayList<String>();
 		
 		Radar.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -64,8 +67,8 @@ public class UqacmonPedia extends ListActivity {
               startActivity(i);*/
      }
 	public void addItems(/*View v*/) {
-		for(Integer i = 0; i < tableauNotes.size(); i++) {
-			listItems.add(tableauNotes.get(i));
+		for(Integer i = 0; i <  (tableauUqacmons.size()); i++) {
+			listItems.add(tableauUqacmons.get(i));
 		}
 		adapter.notifyDataSetChanged();
 	}
