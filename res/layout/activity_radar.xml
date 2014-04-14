@@ -42,6 +42,13 @@
         android:layout_marginLeft="34dp"
         android:layout_marginTop="200dp"
         android:src="@drawable/pokedex_bouton2" />
+    <ImageView
+        android:id="@+id/redCircle"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="37dp"
+        android:layout_marginTop="201dp"
+        android:src="@drawable/red_circle" />
     <Button
         android:id="@+id/b_flash"
         android:layout_width="wrap_content"
