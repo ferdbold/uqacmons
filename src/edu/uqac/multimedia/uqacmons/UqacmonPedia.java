@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class UqacmonPedia extends ListActivity {
+	
+	private ProfsDbAdapter mDbHelper;
 
 	//LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<String> listItems=new ArrayList<String>();
@@ -24,6 +28,7 @@ public class UqacmonPedia extends ListActivity {
     //Variables
 	private ImageButton Radar;
 	List<String> tableauUqacmons;
+	
 	
 	@Override
 	protected void onCreate(Bundle icicle) {
