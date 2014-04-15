@@ -1,8 +1,13 @@
 package edu.uqac.multimedia.uqacmons;
 
+import android.R.string;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -12,6 +17,7 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -22,6 +28,9 @@ public class RadarActivity extends Activity {
 	private ImageView redBip;
 	private ImageView redCircle;
 	private Button flash;
+	private Button getUqacmon;
+	private EditText addInput;
+	private Context ctx;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,22 +42,34 @@ public class RadarActivity extends Activity {
 		redBip = (ImageView)findViewById(R.id.redBip);
 		redCircle = (ImageView)findViewById(R.id.redCircle);
 		flash = (Button)findViewById(R.id.b_flash);
+		getUqacmon = (Button)findViewById(R.id.b_get);
 		
+		ctx = this.getApplicationContext();
 		//Set variables
 		redBip.setAlpha(0F);
 		redCircle.setAlpha(0F);
 		
-		uqacpedia.setOnClickListener(new View.OnClickListener() {
+		uqacpedia.setOnClickListener(new View.OnClickListener() { //bouton pour changer d'écran
 			@Override
 			public void onClick(View vue) {
 				Intent i = new Intent(RadarActivity.this,UqacmonPedia.class);
 				startActivity(i);
 			}
 		});
-		flash.setOnClickListener(new View.OnClickListener() {
+		flash.setOnClickListener(new View.OnClickListener() { // bouton faire flasher le bouton (TEST)
 			@Override
 			public void onClick(View vue) {
 				Flash();
+			}
+		});
+		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
+			@Override
+			public void onClick(View vue) {
+				//TODO : GET ID of pokemon gotten from DB
+				int p_id = 0;
+				String p_name = "DjamalMon";
+				String p_type = "Binaire";
+				GetUqacmon(p_id,p_name,p_type);
 			}
 		});
 	}
@@ -83,6 +104,30 @@ public class RadarActivity extends Activity {
 	    animSet.addAnimation(alpha);
 	    animSet.addAnimation(scale);
 	    redCircle.startAnimation(animSet); //Launch Animations
+	}
+	
+	public void GetUqacmon(int id, String name, String type)  {
+		
+		addInput = new EditText(this);
+		addInput.setBackgroundColor(Color.WHITE);
+		addInput.setTextColor(Color.BLACK);
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setView(addInput);
+	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
+	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	            
+	        }
+	    });
+	    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	        	
+	        }
+	    });
+	    builder.create();
+	    addInput = new EditText(ctx);
+        builder.setView(addInput);
+        builder.show();    
 	}
 
 }
