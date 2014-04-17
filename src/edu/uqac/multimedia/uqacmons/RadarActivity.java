@@ -4,12 +4,15 @@ import android.R.string;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -20,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class RadarActivity extends Activity {
 
@@ -31,6 +35,12 @@ public class RadarActivity extends Activity {
 	private Button getUqacmon;
 	private EditText addInput;
 	private Context ctx;
+	
+	private LayoutInflater getPopupLayout;
+	private ImageView uqacmonUI_image;
+	private TextView uqacmonUI_name;
+	private TextView uqacmonUI_type;
+	private ViewGroup Test;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +118,20 @@ public class RadarActivity extends Activity {
 	
 	public void GetUqacmon(int id, String name, String type)  {
 		
-		addInput = new EditText(this);
-		addInput.setBackgroundColor(Color.WHITE);
-		addInput.setTextColor(Color.BLACK);
+		getPopupLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    builder.setView(addInput);
+		
+		uqacmonUI_image = (ImageView)getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false).findViewById(R.id.uqacmonUIPicture);
+		uqacmonUI_name = (TextView)getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false).findViewById(R.id.uqacmonUIName);
+		uqacmonUI_type =  (TextView)getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false).findViewById(R.id.uqacmonUIType);
+		
+		uqacmonUI_image.setImageResource(GetUqacmonPicture(id));
+		uqacmonUI_name.setText(name);
+		uqacmonUI_type.setText(type);
+	    
+
+		
+	    builder.setView(getPopupLayout.inflate(R.layout.get_uqacmon_ui, Test, true));
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
@@ -124,10 +143,26 @@ public class RadarActivity extends Activity {
 	        	
 	        }
 	    });
+	    	
 	    builder.create();
-	    addInput = new EditText(ctx);
-        builder.setView(addInput);
         builder.show();    
+	}
+	
+	public int GetUqacmonPicture(int id) {
+		switch (id)
+		{    
+			case 0:
+				return(R.drawable.pokedex_bouton2);
+		    case 1:
+		        return(R.drawable.ic_launcher);
+		    case 2:
+		    	return(R.drawable.ic_launcher);
+		    case 3:
+		    	return(R.drawable.ic_launcher);
+		    default:
+		    	return(R.drawable.ic_launcher);
+		}
+	
 	}
 
 }
