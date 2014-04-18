@@ -1,22 +1,19 @@
 package edu.uqac.multimedia.uqacmons;
 
-import android.R.string;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -91,6 +88,18 @@ public class RadarActivity extends Activity {
 		return true;
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_uqacmonpedia:
+	            openUqacmonpedia();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 	public void Flash() {
 		//Red Bip Alpha
 		redBip.setAlpha(1F);
@@ -135,7 +144,7 @@ public class RadarActivity extends Activity {
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
-	            
+	            openUqacmonpedia();
 	        }
 	    });
 	    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -165,4 +174,8 @@ public class RadarActivity extends Activity {
 	
 	}
 
+	private void openUqacmonpedia() {
+		Intent i = new Intent(this, UqacmonPedia.class);
+        startActivity(i);
+	}
 }

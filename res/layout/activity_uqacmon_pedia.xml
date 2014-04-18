@@ -20,7 +20,7 @@
         android:layout_marginTop="-0dp"
         android:alpha="0"
         android:background="@null"
-        android:contentDescription="@string/Pokedex"
+        android:contentDescription="@string/pokedex"
         android:gravity="center_vertical|center_horizontal|left"
         android:src="@drawable/pokedex_bouton" />
 

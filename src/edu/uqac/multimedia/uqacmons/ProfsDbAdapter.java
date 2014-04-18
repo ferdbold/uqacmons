@@ -16,7 +16,7 @@ public class ProfsDbAdapter {
 	public static final String KEY_ROWID = "_id";
 	
 	
-	private static final String TAG= "ProfsDbAdapter";
+	private static final String TAG = "ProfsDbAdapter";
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 	
@@ -24,7 +24,7 @@ public class ProfsDbAdapter {
 			"create table professors (_id integer primary key autoincrement,"
 			+ "name text not null, bio text not null);";
 	
-	private static final String DATABASE_NAME= "data";
+	private static final String DATABASE_NAME = "data";
 	private static final String DATABASE_TABLE = "professors";
 	private static final int DATABASE_VERSION = 3;
 	

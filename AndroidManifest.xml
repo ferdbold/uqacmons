@@ -24,7 +24,12 @@
         </activity>
         <activity
             android:name="edu.uqac.multimedia.uqacmons.UqacmonPedia"
-            android:label="@string/title_activity_uqacmon_pedia" >
+            android:label="@string/pokedex"
+            android:parentActivityName="edu.uqac.multimedia.uqacmons.RadarActivity" >
+	        <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="edu.uqac.multimedia.uqacmons.RadarActivity" />
         </activity>
     </application>
 

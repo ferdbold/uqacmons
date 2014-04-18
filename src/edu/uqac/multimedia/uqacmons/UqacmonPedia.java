@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -77,5 +78,9 @@ public class UqacmonPedia extends ListActivity {
 		}
 		adapter.notifyDataSetChanged();
 	}
-
+	
+	private void openRadar() {
+		Intent i = new Intent(this, RadarActivity.class);
+        startActivity(i);
+	}
 }
