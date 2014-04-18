@@ -1,6 +1,7 @@
 package edu.uqac.multimedia.uqacmons;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -33,11 +34,24 @@ public class RadarActivity extends Activity {
 	private EditText addInput;
 	private Context ctx;
 	
+	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
+	private TextView testview;
+	private Button upDistance;
+	private Button downDistance;
+	
 	private LayoutInflater getPopupLayout;
 	private ImageView uqacmonUI_image;
 	private TextView uqacmonUI_name;
 	private TextView uqacmonUI_type;
-	private ViewGroup Test;
+	private ViewGroup ViewGroupTest;
+	
+	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
+	public Integer distanceToCloser; //Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
+	private Float distanceToCapture = 5F; // Si la distance est inférieure a ce chiffre, on capture l'UQACMON
+	private Float distanceToShow = 100F; // Si la distance est supérieure a ce chiffre, on ne voit rien
+	private Float slowestFlashSpeed = 10000F; //Time in milliseconds
+	private Float fastestFlashSpeed = 1000F; //Time in milliseconds
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +65,26 @@ public class RadarActivity extends Activity {
 		flash = (Button)findViewById(R.id.b_flash);
 		getUqacmon = (Button)findViewById(R.id.b_get);
 		
+		
+		testview = (TextView)findViewById(R.id.TESTVIEW);
+		upDistance = (Button)findViewById(R.id.b_up);
+		downDistance = (Button)findViewById(R.id.b_down);
+		
 		ctx = this.getApplicationContext();
 		//Set variables
 		redBip.setAlpha(0F);
 		redCircle.setAlpha(0F);
+		
+		//Temporaire Tant que la Geolocalisation n'est pas implémentée
+		distanceToCloser = 50;
+		KeepFlashing(); //Initialize the automatic Flashing based on distance
+		upDistance.setOnClickListener(new View.OnClickListener() {
+			@Override public void onClick(View vue) { distanceToCloser += 5;}
+		});
+		downDistance.setOnClickListener(new View.OnClickListener() {
+			@Override public void onClick(View vue) { distanceToCloser -= 5;}
+		});
+		
 		
 		uqacpedia.setOnClickListener(new View.OnClickListener() { //bouton pour changer d'écran
 			@Override
@@ -79,6 +109,9 @@ public class RadarActivity extends Activity {
 				GetUqacmon(p_id,p_name,p_type);
 			}
 		});
+		
+		
+		
 	}
 
 	@Override
@@ -140,7 +173,7 @@ public class RadarActivity extends Activity {
 	    
 
 		
-	    builder.setView(getPopupLayout.inflate(R.layout.get_uqacmon_ui, Test, true));
+	    builder.setView(getPopupLayout.inflate(R.layout.get_uqacmon_ui, ViewGroupTest, true));
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
@@ -178,4 +211,31 @@ public class RadarActivity extends Activity {
 		Intent i = new Intent(this, UqacmonPedia.class);
         startActivity(i);
 	}
+	
+	private void KeepFlashing() {
+		handler.postDelayed(runnable, 5000);
+	}
+	
+	//Timer pour le Flash Automatique
+	private Handler handler = new Handler();
+	private Runnable runnable = new Runnable() {
+		   @Override
+		   public void run() { 
+		      //Calcule du temps avant le prochain Flash();
+			  Float timeNextFlash;
+			  timeNextFlash = (10F)*fastestFlashSpeed/(((distanceToShow - distanceToCloser)/(distanceToShow-distanceToCapture))*(slowestFlashSpeed / fastestFlashSpeed));
+		      if(timeNextFlash > slowestFlashSpeed) {
+		    	  timeNextFlash = slowestFlashSpeed;
+		    	  distanceToCloser = distanceToShow.intValue();
+		      }
+		      if(timeNextFlash < fastestFlashSpeed) {
+		    	  timeNextFlash = fastestFlashSpeed; 
+		      }
+		      testview.setText(timeNextFlash.toString());
+			  Flash(); // FLASH !
+		      //On Rappele L'Handler avec le Delai voulu
+		      handler.postDelayed(this, timeNextFlash.intValue());
+		   }
+		};
+	
 }
