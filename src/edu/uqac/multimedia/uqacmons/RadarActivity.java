@@ -26,12 +26,10 @@ import android.widget.TextView;
 public class RadarActivity extends Activity {
 
 	private ImageButton uqacpedia;
-	private ImageView blueBip;
 	private ImageView redBip;
 	private ImageView redCircle;
 	private Button flash;
 	private Button getUqacmon;
-	private EditText addInput;
 	private Context ctx;
 	
 	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
@@ -40,10 +38,10 @@ public class RadarActivity extends Activity {
 	private Button downDistance;
 	
 	private LayoutInflater getPopupLayout;
+	private View getPopupLayoutView;
 	private ImageView uqacmonUI_image;
 	private TextView uqacmonUI_name;
 	private TextView uqacmonUI_type;
-	private ViewGroup ViewGroupTest;
 	
 	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
 	public Integer distanceToCloser; //Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
@@ -59,7 +57,6 @@ public class RadarActivity extends Activity {
 		setContentView(R.layout.activity_radar);
 		//GUI
 		uqacpedia = (ImageButton)findViewById(R.id.b_uqacpedia);
-		blueBip = (ImageView)findViewById(R.id.blueBip);
 		redBip = (ImageView)findViewById(R.id.redBip);
 		redCircle = (ImageView)findViewById(R.id.redCircle);
 		flash = (Button)findViewById(R.id.b_flash);
@@ -161,11 +158,12 @@ public class RadarActivity extends Activity {
 	public void GetUqacmon(int id, String name, String type)  {
 		
 		getPopupLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    getPopupLayoutView = getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		
-		uqacmonUI_image = (ImageView)getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false).findViewById(R.id.uqacmonUIPicture);
-		uqacmonUI_name = (TextView)getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false).findViewById(R.id.uqacmonUIName);
-		uqacmonUI_type =  (TextView)getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false).findViewById(R.id.uqacmonUIType);
+		uqacmonUI_image = (ImageView)getPopupLayoutView.findViewById(R.id.uqacmonUIPicture);
+		uqacmonUI_name = (TextView)getPopupLayoutView.findViewById(R.id.uqacmonUIName);
+		uqacmonUI_type =  (TextView)getPopupLayoutView.findViewById(R.id.uqacmonUIType);
 		
 		uqacmonUI_image.setImageResource(GetUqacmonPicture(id));
 		uqacmonUI_name.setText(name);
@@ -173,7 +171,7 @@ public class RadarActivity extends Activity {
 	    
 
 		
-	    builder.setView(getPopupLayout.inflate(R.layout.get_uqacmon_ui, ViewGroupTest, true));
+	    builder.setView(getPopupLayoutView);
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
