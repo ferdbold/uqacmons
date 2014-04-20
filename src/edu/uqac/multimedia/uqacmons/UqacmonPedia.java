@@ -133,11 +133,11 @@ public class UqacmonPedia extends ListActivity {
 		switch (id)
 		{    
 			case -1:
-				return(R.drawable.pokedex_bouton);
+				return(R.drawable.uqacmon_mistery); //on envoie -1 quand l'uqacmon n'est pas capturé encore
 			case 0:
-				return(R.drawable.pokedex_bouton2);
+				return(R.drawable.uqacmon_djamal);
 		    case 1:
-		        return(R.drawable.ic_launcher);
+		        return(R.drawable.uqacmon_verreault);
 		    case 2:
 		    	return(R.drawable.ic_launcher);
 		    case 3:
