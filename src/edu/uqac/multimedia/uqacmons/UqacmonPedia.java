@@ -3,6 +3,7 @@ package edu.uqac.multimedia.uqacmons;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.string;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +27,7 @@ import android.widget.TextView;
 
 public class UqacmonPedia extends Activity {
 	
-	private ProfsDbAdapter mDbHelper;
+	
 
 	//LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<View> listItems=new ArrayList<View>();
@@ -42,6 +44,7 @@ public class UqacmonPedia extends Activity {
 	private ImageView uqacmonUI_image;
 	private TextView uqacmonUI_name;
 	private TextView uqacmonUI_type;
+	private NewProfsDbAdapter mDbHelper;
 	
 	//TEST C ADAPTER
 	ListView testList;
@@ -152,24 +155,26 @@ public class UqacmonPedia extends Activity {
 
 	
 	public void CreateUqacmonList(){ // A FAIRE : Crée la liste a afficher dans l'uqacmonpedia
-		//TEMPORAIRE A FIN DE TESTS:
-		uqacmonIsCaptured.add(true);
-		uqacmonImg.add(0);
-		uqacmonName.add("DjmamalMon");
-		uqacmonType.add("Binaire");
+		mDbHelper = new NewProfsDbAdapter(this);
+		mDbHelper.createDatabase();
+		mDbHelper.open();
+		Cursor profsdata = mDbHelper.getProfsData();
+		profsdata.moveToFirst();
+		while(!profsdata.isAfterLast()){
+			uqacmonName.add(profsdata.getString(profsdata.getColumnIndexOrThrow("name")));
+			uqacmonType.add(profsdata.getString(profsdata.getColumnIndexOrThrow("bio")));
+			uqacmonImg.add(profsdata.getInt(profsdata.getColumnIndexOrThrow("image")));
+			if(profsdata.getInt(profsdata.getColumnIndexOrThrow("captured"))==1){
+				uqacmonIsCaptured.add(true);
+			}
+			else{
+				uqacmonIsCaptured.add(false);
+			}
+			profsdata.moveToNext();
+		}
+		profsdata.close();
+		mDbHelper.close();
 		
-		uqacmonIsCaptured.add(false);
-		uqacmonImg.add(1);
-		uqacmonName.add("BobMon");
-		uqacmonType.add("type");
-		
-		//TODO: Pour chaque Uqacmon, initialisez les 4 valeurs suivantes à l'aide de la BD:
-		/* uqacmonIsCaptured[i] : BOOLEAN ( est-ce qu'il est capturé ou non ? )
-		 * uqacmonImg[i] : INT ( Mettre Son Id, la fonction GetUqacmonPicture s'occupe d'aller chercher la bonne image )
-		 * uqacmonName[i] : STRING ( Ajouté le nom de l'uqacmon )
-		 * uqacmonType[i] : STRING ( Ajouté le type de l'uqacmon )
-		 * 
-		 */
 		
 		
 	}
