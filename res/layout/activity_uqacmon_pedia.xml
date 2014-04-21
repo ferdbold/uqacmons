@@ -25,7 +25,7 @@
         android:src="@drawable/pokedex_bouton" />
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/list"
         android:layout_width="255dp"
         android:layout_height="265dp"
         android:layout_marginLeft="5dp"

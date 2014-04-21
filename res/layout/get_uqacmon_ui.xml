@@ -17,7 +17,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="@string/GetUIName"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/uqacmonUIType"
@@ -26,6 +26,6 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:text="@string/GetUIType"
-        android:textSize="20sp" />
+        android:textSize="15sp" />
 
 </LinearLayout>
