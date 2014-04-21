@@ -1,5 +1,9 @@
 package edu.uqac.multimedia.uqacmons;
 
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
@@ -23,8 +27,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class RadarActivity extends Activity {
+public class RadarActivity extends Activity implements LocationListener {
 
 	private ImageButton uqacpedia;
 	private ImageView redBip;
@@ -33,6 +38,7 @@ public class RadarActivity extends Activity {
 	private Button getUqacmon;
 	private Context ctx;
 	private NewProfsDbAdapter mDbHelper;
+	private LocationManager lm;
 	
 	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
 	private TextView testview;
@@ -108,9 +114,6 @@ public class RadarActivity extends Activity {
 				GetUqacmon(p_id,p_name,p_type);
 			}
 		});
-		
-		
-		
 	}
 
 	@Override
@@ -225,23 +228,83 @@ public class RadarActivity extends Activity {
 	//Timer pour le Flash Automatique
 	private Handler handler = new Handler();
 	private Runnable runnable = new Runnable() {
-		   @Override
-		   public void run() { 
-		      //Calcule du temps avant le prochain Flash();
-			  Float timeNextFlash;
-			  timeNextFlash = (10F)*fastestFlashSpeed/(((distanceToShow - distanceToCloser)/(distanceToShow-distanceToCapture))*(slowestFlashSpeed / fastestFlashSpeed));
-		      if(timeNextFlash > slowestFlashSpeed) {
-		    	  timeNextFlash = slowestFlashSpeed;
-		    	  distanceToCloser = distanceToShow.intValue();
-		      }
-		      if(timeNextFlash < fastestFlashSpeed) {
-		    	  timeNextFlash = fastestFlashSpeed; 
-		      }
-		      testview.setText(timeNextFlash.toString());
-			  Flash(); // FLASH !
-		      //On Rappele L'Handler avec le Delai voulu
-		      handler.postDelayed(this, timeNextFlash.intValue());
-		   }
-		};
+	   @Override
+	   public void run() { 
+	      //Calcule du temps avant le prochain Flash();
+		  Float timeNextFlash;
+		  timeNextFlash = (10F)*fastestFlashSpeed/(((distanceToShow - distanceToCloser)/(distanceToShow-distanceToCapture))*(slowestFlashSpeed / fastestFlashSpeed));
+	      if(timeNextFlash > slowestFlashSpeed) {
+	    	  timeNextFlash = slowestFlashSpeed;
+	    	  distanceToCloser = distanceToShow.intValue();
+	      }
+	      if(timeNextFlash < fastestFlashSpeed) {
+	    	  timeNextFlash = fastestFlashSpeed; 
+	      }
+	      testview.setText(timeNextFlash.toString());
+		  Flash(); // FLASH !
+	      //On Rappele L'Handler avec le Delai voulu
+	      handler.postDelayed(this, timeNextFlash.intValue());
+	   }
+	};
+
+	/**
+	 * GƒOLOCALISATION
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+		if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
+		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		lm.removeUpdates(this);
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		double latitude = location.getLatitude();
+		double longitude = location.getLongitude();
+		float accuracy = location.getAccuracy();
+
+		String msg = String.format(
+				getResources().getString(R.string.geoloc_update), latitude,
+				longitude, accuracy);
+		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		String msg = String.format(getResources().getString(R.string.gps_desactive), provider);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		String msg = String.format(getResources().getString(R.string.gps_active), provider);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		String newStatus = "";
+		switch (status) {
+			case LocationProvider.OUT_OF_SERVICE:
+				newStatus = "OUT_OF_SERVICE";
+				break;
+			case LocationProvider.TEMPORARILY_UNAVAILABLE:
+				newStatus = "TEMPORARILY_UNAVAILABLE";
+				break;
+			case LocationProvider.AVAILABLE:
+				newStatus = "AVAILABLE";
+				break;
+		}
+		String msg = String.format(getResources().getString(R.string.gps_desactive), provider, newStatus);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
 	
 }

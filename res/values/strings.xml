@@ -8,5 +8,7 @@
     <string name="pokedex">Pokédex</string>
     <string name="GetUIName">UQACMON</string>
     <string name="GetUIType">TYPE</string>
-
+	<string name="gps_active">Le GPS est maintenant activé</string>
+	<string name="gps_desactive">Le GPS est maintenant désactivé</string>
+	<string name="geoloc_update">New Location : Latitude = %1$s, Longitude = %2$s, avec une précision de %3$s mètres</string>
 </resources>
