@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ public class RadarActivity extends Activity {
 	private Button flash;
 	private Button getUqacmon;
 	private Context ctx;
+	private NewProfsDbAdapter mDbHelper;
 	
 	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
 	private TextView testview;
@@ -175,7 +177,13 @@ public class RadarActivity extends Activity {
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
+	        	/*int captured=1;
+	        	mDbHelper = new NewProfsDbAdapter(ctx);
+	            mDbHelper.open();
+	            Cursor profsdata = mDbHelper.getProfsData();
+	            profsdata.*/
 	            openUqacmonpedia();
+	            
 	        }
 	    });
 	    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
