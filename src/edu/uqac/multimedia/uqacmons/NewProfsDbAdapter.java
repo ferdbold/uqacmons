@@ -78,11 +78,10 @@ public class NewProfsDbAdapter
          }
      }
      
-   /*  public boolean updateProf(long rowId, int positive) {
+     public boolean updateProf(long rowId, int positive) {
     	 ContentValues cv= new ContentValues();
     	 cv.put("captured","1");
-    	 mDb.update("ProfsDBTable", cv, KEY_ID +, null)
-    	 
-     }*/
+    	 return mDb.update("ProfsDBSQL", cv, "KEY_ROWID" + "=" + rowId, null)>0; 
+     }
      
 }

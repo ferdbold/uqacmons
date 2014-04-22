@@ -101,10 +101,16 @@ public class RadarActivity extends Activity {
 		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
 			@Override
 			public void onClick(View vue) {
-				//TODO : GET ID of pokemon gotten from DB
-				int p_id = 0;
-				String p_name = "DjamalMon";
-				String p_type = "Binaire";
+				int id=2; // CONSTANTE D'ID POUR PROFESSEUR POUR DES FINS DE TESTS 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+				mDbHelper = new NewProfsDbAdapter(ctx);
+				mDbHelper.createDatabase();
+				mDbHelper.open();
+				Cursor profsdata = mDbHelper.getProfsData();
+				profsdata.moveToPosition(id); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+				int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
+				String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
+				String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
+				mDbHelper.close();
 				GetUqacmon(p_id,p_name,p_type);
 			}
 		});
@@ -177,13 +183,12 @@ public class RadarActivity extends Activity {
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
-	        	/*int captured=1;
+	        	int captured=1;
 	        	mDbHelper = new NewProfsDbAdapter(ctx);
 	            mDbHelper.open();
-	            Cursor profsdata = mDbHelper.getProfsData();
-	            profsdata.*/
+	            mDbHelper.updateProf(which, captured);
+	            mDbHelper.close();
 	            openUqacmonpedia();
-	            
 	        }
 	    });
 	    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
