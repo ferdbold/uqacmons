@@ -11,6 +11,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class UqacmonPedia extends ListActivity {
+public class UqacmonPedia extends Activity {
 	
 	
 
@@ -46,11 +47,13 @@ public class UqacmonPedia extends ListActivity {
 	private TextView uqacmonUI_type;
 	private NewProfsDbAdapter mDbHelper;
 	
-	
+	//TEST C ADAPTER
+	ListView testList;
+	private UqacmonAdapter testAdapter;
 	
 	@Override
-	protected void onCreate(Bundle icicle) {
-		super.onCreate(icicle);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_uqacmon_pedia);
 		//Get UI
 		Radar = (ImageButton) findViewById(R.id.b_radar);
@@ -66,12 +69,16 @@ public class UqacmonPedia extends ListActivity {
 				openRadar();
 			}
 		});
+		CreateUqacmonList();
 		
-		adapter = new ArrayAdapter<View>(this, android.R.layout.simple_list_item_1,  listItems);
-	    setListAdapter(adapter);
-	    addItems();
-	        
-	    CreateUqacmonList();
+		//Test C ADAPTEr
+        testList=(ListView)findViewById(R.id.list);
+        // Getting adapter by passing xml data ArrayList
+        testAdapter = new UqacmonAdapter(this, uqacmonName, uqacmonType,uqacmonIsCaptured, uqacmonImg);
+        testList.setAdapter(testAdapter);
+		
+
+
 	
 	}
 
@@ -81,17 +88,8 @@ public class UqacmonPedia extends ListActivity {
 		getMenuInflater().inflate(R.menu.uqacmon_pedia, menu);
 		return true;
 	}
-	
-	 @Override
-     protected void onListItemClick(ListView l, View v, int position, long id) { 
-           super.onListItemClick(l, v, position, id);
-              int itemPosition = position;
-              // faire qqc une fois bouton cliquer.
-              /*Intent i = new Intent(NoteActivity.this, MainActivity.class);
-              i.putExtra("ID", position);
-              startActivity(i);*/
-     }
-	public void addItems(/*View v*/) {
+
+	/*public void addItems(View v) {
 		for(Integer i = 0; i <  (uqacmonName.size()); i++) {
 			 
 			getPopupLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -119,37 +117,21 @@ public class UqacmonPedia extends ListActivity {
 		uqacmonUI_image = (ImageView)newUqacmon.findViewById(R.id.uqacmonUIPicture);
 		uqacmonUI_name = (TextView)newUqacmon.findViewById(R.id.uqacmonUIName);
 		uqacmonUI_type =  (TextView)newUqacmon.findViewById(R.id.uqacmonUIType); 
+		
 		//uqacmonUI_image.setImageResource(GetUqacmonPicture(uqacmonImg.get(-1)));
 		uqacmonUI_name.setText("?????????");
 		uqacmonUI_type.setText("??????");	
 		listItems.add(newUqacmon);
-		//*/
+		//
 		adapter.notifyDataSetChanged();
-	}
+	}*/
 	
 	private void openRadar() {
 		Intent i = new Intent(UqacmonPedia.this, RadarActivity.class);
         startActivity(i);
 	}
 	
-	public int GetUqacmonPicture(int id) {
-		switch (id)
-		{    
-			case -1:
-				return(R.drawable.uqacmon_mistery); //on envoie -1 quand l'uqacmon n'est pas capturé encore
-			case 0:
-				return(R.drawable.uqacmon_djamal);
-		    case 1:
-		        return(R.drawable.uqacmon_verreault);
-		    case 2:
-		    	return(R.drawable.ic_launcher);
-		    case 3:
-		    	return(R.drawable.ic_launcher);
-		    default:
-		    	return(R.drawable.ic_launcher);
-		}
 	
-	}
 
 	
 	public void CreateUqacmonList(){ // A FAIRE : Crée la liste a afficher dans l'uqacmonpedia
