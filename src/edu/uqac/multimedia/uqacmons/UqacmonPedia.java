@@ -11,6 +11,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,11 +77,7 @@ public class UqacmonPedia extends Activity {
         testAdapter = new UqacmonAdapter(this, uqacmonName, uqacmonType,uqacmonIsCaptured, uqacmonImg);
         testList.setAdapter(testAdapter);
 		
-		
-		/*adapter = new ArrayAdapter<View>(this, android.R.layout.simple_list_item_1,  listItems);
-	    setListAdapter(adapter);
-	    addItems();*/
-	    
+
 
 	
 	}
@@ -134,24 +131,7 @@ public class UqacmonPedia extends Activity {
         startActivity(i);
 	}
 	
-	public int GetUqacmonPicture(int id) {
-		switch (id)
-		{    
-			case -1:
-				return(R.drawable.uqacmon_mistery); //on envoie -1 quand l'uqacmon n'est pas capturé encore
-			case 0:
-				return(R.drawable.uqacmon_djamal);
-		    case 1:
-		        return(R.drawable.uqacmon_verreault);
-		    case 2:
-		    	return(R.drawable.ic_launcher);
-		    case 3:
-		    	return(R.drawable.ic_launcher);
-		    default:
-		    	return(R.drawable.ic_launcher);
-		}
 	
-	}
 
 	
 	public void CreateUqacmonList(){ // A FAIRE : Crée la liste a afficher dans l'uqacmonpedia

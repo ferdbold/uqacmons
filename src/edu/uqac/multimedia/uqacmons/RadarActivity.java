@@ -202,10 +202,12 @@ public class RadarActivity extends Activity implements LocationListener {
 	public int GetUqacmonPicture(int id) {
 		switch (id)
 		{    
+			case -1:
+				return(R.drawable.uqacmon_mistery); //on envoie -1 quand l'uqacmon n'est pas capturé encore
 			case 0:
-				return(R.drawable.pokedex_bouton2);
-		    case 1:
-		        return(R.drawable.ic_launcher);
+				return(R.drawable.uqacmon_djamal);
+			case 1:
+				return(R.drawable.uqacmon_verreault);
 		    case 2:
 		    	return(R.drawable.ic_launcher);
 		    case 3:
@@ -256,7 +258,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 		if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
-		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, this);
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this); //Changé "NETWORK_PROVIDER" pour "GPS_PROVIDER" sinon ça crash dans mon emulateur.
 	}
 
 	@Override

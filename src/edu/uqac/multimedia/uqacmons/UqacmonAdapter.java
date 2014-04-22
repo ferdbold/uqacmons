@@ -5,6 +5,7 @@ import java.util.HashMap;
  
 
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 
 public class UqacmonAdapter extends BaseAdapter {
 
-	private UqacmonPedia uqacmonPedia;
+
 	private Activity activity;
     private static LayoutInflater inflater=null;
     
@@ -58,11 +59,11 @@ public class UqacmonAdapter extends BaseAdapter {
         ImageView image=(ImageView)vi.findViewById(R.id.uqacmonUIPicture); // image
 
         if(uqacmonIsCaptured.get(position)) {
-			//image.setImageResource(uqacmonPedia.GetUqacmonPicture(uqacmonImg.get(position)));
+			image.setImageResource(GetUqacmonPicture(uqacmonImg.get(position)));
 			name.setText(uqacmonName.get(position));
 			type.setText(uqacmonType.get(position));	
 		} else {
-			//image.setImageResource(uqacmonPedia.GetUqacmonPicture(uqacmonImg.get(position)));
+			image.setImageResource(GetUqacmonPicture(-1));
 			name.setText("?????????");
 			type.setText("??????");	
 		}
@@ -70,5 +71,23 @@ public class UqacmonAdapter extends BaseAdapter {
         return vi;
     }
     
+    public int GetUqacmonPicture(int id) {
+		switch (id)
+		{    
+			case -1:
+				return(R.drawable.uqacmon_mistery); //on envoie -1 quand l'uqacmon n'est pas capturé encore
+			case 0:
+				return(R.drawable.uqacmon_djamal);
+			case 1:
+				return(R.drawable.uqacmon_verreault);
+		    case 2:
+		    	return(R.drawable.ic_launcher);
+		    case 3:
+		    	return(R.drawable.ic_launcher);
+		    default:
+		    	return(R.drawable.ic_launcher);
+		}
+	
+	}
 	
 }
