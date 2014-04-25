@@ -42,13 +42,21 @@
         android:textSize = "10dp"
         android:layout_toRightOf = "@+id/b_flash"
         />
+    <Button
+        android:id="@+id/b_release"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="Release" 
+        android:textSize = "10dp"
+        android:layout_toRightOf = "@+id/b_get"
+        />
      <Button
         android:id="@+id/b_up"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:text="U" 
         android:textSize = "10dp"
-        android:layout_toRightOf = "@+id/b_get"
+        android:layout_toRightOf = "@+id/b_release"
         />
     
       <Button

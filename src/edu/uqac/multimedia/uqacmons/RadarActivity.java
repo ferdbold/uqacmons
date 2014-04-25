@@ -36,6 +36,7 @@ public class RadarActivity extends Activity implements LocationListener {
 	private ImageView redCircle;
 	private Button flash;
 	private Button getUqacmon;
+	private Button releaseUqacmons;
 	private Context ctx;
 	private NewProfsDbAdapter mDbHelper;
 	private LocationManager lm;
@@ -69,7 +70,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		redCircle = (ImageView)findViewById(R.id.redCircle);
 		flash = (Button)findViewById(R.id.b_flash);
 		getUqacmon = (Button)findViewById(R.id.b_get);
-		
+		releaseUqacmons = (Button)findViewById(R.id.b_release);
 		
 		testview = (TextView)findViewById(R.id.TESTVIEW);
 		upDistance = (Button)findViewById(R.id.b_up);
@@ -121,6 +122,17 @@ public class RadarActivity extends Activity implements LocationListener {
 				profsdata.close();
 				mDbHelper.close();
 				GetUqacmon(p_id,p_name,p_type);
+			}
+		});
+		releaseUqacmons.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mDbHelper = new NewProfsDbAdapter(ctx);
+				mDbHelper.createDatabase();
+				mDbHelper.open();
+				mDbHelper.releaseAllProf();
+				mDbHelper.close();
 			}
 		});
 	}

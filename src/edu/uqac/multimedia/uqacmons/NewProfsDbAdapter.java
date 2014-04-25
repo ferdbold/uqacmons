@@ -84,4 +84,10 @@ public class NewProfsDbAdapter
     	 return mDb.update("ProfsDBTable", cv, "KEY_ID" + "=" + rowId, null)>0; 
      }
      
+     public boolean releaseAllProf(){
+    	 ContentValues cv= new ContentValues();
+    	 cv.put("captured","0");
+    	 return mDb.update("ProfsDBTable", cv, null, null)>0;
+     }
+     
 }
