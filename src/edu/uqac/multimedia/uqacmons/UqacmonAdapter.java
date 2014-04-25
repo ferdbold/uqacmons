@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -81,9 +82,19 @@ public class UqacmonAdapter extends BaseAdapter {
 			case 1:
 				return(R.drawable.uqacmon_verreault);
 		    case 2:
-		    	return(R.drawable.ic_launcher);
+		    	return(R.drawable.uqacmon_dallaire);
 		    case 3:
-		    	return(R.drawable.ic_launcher);
+		    	return(R.drawable.uqacmon_bob);
+		    case 4:
+		    	return(R.drawable.uqacmon_pierre);
+		    case 5:
+		    	return(R.drawable.uqacmon_alexandre);
+		    case 6:
+		    	return(R.drawable.uqacmon_tarik);
+		    case 7:
+		    	return(R.drawable.uqacmon_bruno);
+		    case 8:
+		    	return(R.drawable.uqacmon_jean);
 		    default:
 		    	return(R.drawable.ic_launcher);
 		}

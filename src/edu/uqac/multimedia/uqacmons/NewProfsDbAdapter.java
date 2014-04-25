@@ -81,7 +81,7 @@ public class NewProfsDbAdapter
      public boolean updateProf(long rowId, int positive) {
     	 ContentValues cv= new ContentValues();
     	 cv.put("captured","1");
-    	 return mDb.update("ProfsDBSQL", cv, "KEY_ROWID" + "=" + rowId, null)>0; 
+    	 return mDb.update("ProfsDBTable", cv, "KEY_ID" + "=" + rowId, null)>0; 
      }
      
 }

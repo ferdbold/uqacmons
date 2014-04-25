@@ -107,15 +107,18 @@ public class RadarActivity extends Activity implements LocationListener {
 		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
 			@Override
 			public void onClick(View vue) {
-				int id=2; // CONSTANTE D'ID POUR PROFESSEUR POUR DES FINS DE TESTS 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+				int id=1;  // CONSTANTE D'ID POUR PROFESSEUR POUR DES FINS DE TESTS 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+				int captured=1;
 				mDbHelper = new NewProfsDbAdapter(ctx);
 				mDbHelper.createDatabase();
 				mDbHelper.open();
+		        mDbHelper.updateProf(id, captured);
 				Cursor profsdata = mDbHelper.getProfsData();
-				profsdata.moveToPosition(id); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+				profsdata.moveToPosition(id-1); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
 				int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
 				String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
 				String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
+				profsdata.close();
 				mDbHelper.close();
 				GetUqacmon(p_id,p_name,p_type);
 			}
@@ -167,6 +170,7 @@ public class RadarActivity extends Activity implements LocationListener {
 	}
 	
 	public void GetUqacmon(int id, String name, String type)  {
+		int captured=1;
 		
 		getPopupLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    getPopupLayoutView = getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false);
@@ -185,12 +189,7 @@ public class RadarActivity extends Activity implements LocationListener {
 	    builder.setView(getPopupLayoutView);
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
-	        public void onClick(DialogInterface dialog, int which) {
-	        	int captured=1;
-	        	mDbHelper = new NewProfsDbAdapter(ctx);
-	            mDbHelper.open();
-	            mDbHelper.updateProf(which, captured);
-	            mDbHelper.close();
+	        public void onClick(DialogInterface dialog, int which) {	        	
 	            openUqacmonpedia();
 	        }
 	    });
@@ -214,9 +213,19 @@ public class RadarActivity extends Activity implements LocationListener {
 			case 1:
 				return(R.drawable.uqacmon_verreault);
 		    case 2:
-		    	return(R.drawable.ic_launcher);
+		    	return(R.drawable.uqacmon_dallaire);
 		    case 3:
-		    	return(R.drawable.ic_launcher);
+		    	return(R.drawable.uqacmon_bob);
+		    case 4:
+		    	return(R.drawable.uqacmon_pierre);
+		    case 5:
+		    	return(R.drawable.uqacmon_alexandre);
+		    case 6:
+		    	return(R.drawable.uqacmon_tarik);
+		    case 7:
+		    	return(R.drawable.uqacmon_bruno);
+		    case 8:
+		    	return(R.drawable.uqacmon_jean);
 		    default:
 		    	return(R.drawable.ic_launcher);
 		}
