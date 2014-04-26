@@ -1,11 +1,6 @@
 package edu.uqac.multimedia.uqacmons;
 
 import java.util.ArrayList;
-import java.util.HashMap;
- 
-
-
-
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class UqacmonAdapter extends BaseAdapter {
-
-
 	private Activity activity;
     private static LayoutInflater inflater=null;
     
@@ -35,7 +28,6 @@ public class UqacmonAdapter extends BaseAdapter {
         uqacmonName = names;
         uqacmonType = types;
         uqacmonImg = images;
-        
     }
  
     public int getCount() {
@@ -98,7 +90,5 @@ public class UqacmonAdapter extends BaseAdapter {
 		    default:
 		    	return(R.drawable.ic_launcher);
 		}
-	
 	}
-	
 }

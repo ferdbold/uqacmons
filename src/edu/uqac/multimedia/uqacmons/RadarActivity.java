@@ -16,14 +16,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -182,7 +180,7 @@ public class RadarActivity extends Activity implements LocationListener {
 	}
 	
 	public void GetUqacmon(int id, String name, String type)  {
-		int captured=1;
+		//int captured=1;
 		
 		getPopupLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    getPopupLayoutView = getPopupLayout.inflate(R.layout.get_uqacmon_ui, null, false);
@@ -195,9 +193,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		uqacmonUI_image.setImageResource(GetUqacmonPicture(id));
 		uqacmonUI_name.setText(name);
 		uqacmonUI_type.setText(type);
-	    
 
-		
 	    builder.setView(getPopupLayoutView);
 	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {

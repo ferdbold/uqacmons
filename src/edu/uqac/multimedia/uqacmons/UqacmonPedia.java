@@ -1,40 +1,27 @@
 package edu.uqac.multimedia.uqacmons;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import android.R.string;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
-import android.view.LayoutInflater;
+//import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+//import android.widget.TextView;
 
 public class UqacmonPedia extends Activity {
 	
-	
-
 	//LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
     ArrayList<View> listItems=new ArrayList<View>();
     //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<View> adapter;
-    private LayoutInflater getPopupLayout;
+    //private LayoutInflater getPopupLayout;
     
     //Variables
 	private ImageButton Radar;
@@ -42,9 +29,9 @@ public class UqacmonPedia extends Activity {
 	ArrayList<Integer> uqacmonImg;
 	ArrayList<String> uqacmonName;
 	ArrayList<String> uqacmonType;
-	private ImageView uqacmonUI_image;
-	private TextView uqacmonUI_name;
-	private TextView uqacmonUI_type;
+	//private ImageView uqacmonUI_image;
+	//private TextView uqacmonUI_name;
+	//private TextView uqacmonUI_type;
 	private NewProfsDbAdapter mDbHelper;
 	
 	//TEST C ADAPTER
@@ -76,10 +63,6 @@ public class UqacmonPedia extends Activity {
         // Getting adapter by passing xml data ArrayList
         testAdapter = new UqacmonAdapter(this, uqacmonName, uqacmonType,uqacmonIsCaptured, uqacmonImg);
         testList.setAdapter(testAdapter);
-		
-
-
-	
 	}
 
 	@Override
@@ -131,9 +114,6 @@ public class UqacmonPedia extends Activity {
         startActivity(i);
 	}
 	
-	
-
-	
 	public void CreateUqacmonList(){ // A FAIRE : Crée la liste a afficher dans l'uqacmonpedia
 		mDbHelper = new NewProfsDbAdapter(this);
 		mDbHelper.createDatabase();
@@ -154,11 +134,5 @@ public class UqacmonPedia extends Activity {
 		}
 		profsdata.close();
 		mDbHelper.close();
-		
-		
-		
 	}
-	
-	
-	
 }
