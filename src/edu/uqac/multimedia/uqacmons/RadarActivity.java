@@ -317,8 +317,8 @@ public class RadarActivity extends Activity implements LocationListener {
 		Cursor profsdata = mDbHelper.getProfsData();
 		profsdata.moveToFirst();
 		while(profsdata!=null){
-			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)||(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
-				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)||(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
+			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
+				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
 					id=profsdata.getPosition();
 					return(id);
 				}
