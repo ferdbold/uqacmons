@@ -121,6 +121,7 @@ public class RadarActivity extends Activity implements LocationListener {
 						String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
 						profsdata.close();
 						mDbHelper.close();
+
 						GetUqacmon(p_id,p_name,p_type);
 					}
 					else{
@@ -322,10 +323,17 @@ public class RadarActivity extends Activity implements LocationListener {
 		mDbHelper.open();
 		Cursor profsdata = mDbHelper.getProfsData();
 		profsdata.moveToFirst();
+		
+		do {
+			distanceToCloser= (int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
+			profsdata.moveToNext();
+		}
+		while(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0 && profsdata!=null);
+		
 		while(profsdata!=null){
-			distanceToCloser=distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
+			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
 			if((distanceAvecProf<distanceToCloser) && (profsdata.getInt(profsdata.getColumnIndex("captured"))!=1)){
-				distanceToCloser=(int) distanceAvecProf;
+				distanceToCloser= distanceAvecProf;
 			}
 			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
 				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
