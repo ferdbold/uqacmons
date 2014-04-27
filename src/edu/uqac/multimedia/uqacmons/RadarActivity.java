@@ -107,21 +107,25 @@ public class RadarActivity extends Activity implements LocationListener {
 		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
 			@Override
 			public void onClick(View vue) {
+				mDbHelper = new NewProfsDbAdapter(ctx);
+				mDbHelper.createDatabase();
+				mDbHelper.open();
+				Cursor profsdata = mDbHelper.getProfsData();
 				if(idprof>-1){
-					int captured=1;
-					mDbHelper = new NewProfsDbAdapter(ctx);
-					mDbHelper.createDatabase();
-					mDbHelper.open();
-					mDbHelper.updateProf(idprof, captured);
-					Cursor profsdata = mDbHelper.getProfsData();
 					profsdata.moveToPosition(idprof); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
-				
-					int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
-					String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
-					String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
-					profsdata.close();
-					mDbHelper.close();
-					GetUqacmon(p_id,p_name,p_type);
+					if(profsdata.getInt(profsdata.getColumnIndex("captured"))!=1){
+						int captured=1;
+						mDbHelper.updateProf(idprof, captured);
+						int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
+						String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
+						String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
+						profsdata.close();
+						mDbHelper.close();
+						GetUqacmon(p_id,p_name,p_type);
+					}
+					else{
+						Toast.makeText(ctx, "L'uqacmon a déjà été capturé", Toast.LENGTH_LONG).show();
+					}
 				}
 				else{
 					Toast.makeText(ctx, "Aucun uqacmon dans le secteur", Toast.LENGTH_LONG ).show();
@@ -304,12 +308,14 @@ public class RadarActivity extends Activity implements LocationListener {
 		String msg = String.format(
 				getResources().getString(R.string.geoloc_update), latitude,
 				longitude, accuracy);
-		idprof=megaswitch(latitude, longitude, accuracy);
+		idprof=rechercheProfetDistance(latitude, longitude, accuracy);
 		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 	}
 	
-	private int megaswitch(double latitude,double longitude,float accuracy){
+	private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
+		float RayonTerre=6371.0F;
+		int distanceAvecProf;
 		int id;
 		mDbHelper = new NewProfsDbAdapter(this);
 		mDbHelper.createDatabase();
@@ -317,6 +323,10 @@ public class RadarActivity extends Activity implements LocationListener {
 		Cursor profsdata = mDbHelper.getProfsData();
 		profsdata.moveToFirst();
 		while(profsdata!=null){
+			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
+			if((distanceAvecProf<distanceToCloser) && (profsdata.getInt(profsdata.getColumnIndex("captured"))!=1)){
+				distanceToCloser=(int) distanceAvecProf;
+			}
 			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
 				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
 					id=profsdata.getPosition();
