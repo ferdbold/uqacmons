@@ -326,7 +326,9 @@ public class RadarActivity extends Activity implements LocationListener {
 		
 		do {
 			distanceToCloser= (int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
-			profsdata.moveToNext();
+			if(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0){
+				profsdata.moveToNext();
+			}
 		}
 		while(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0 && profsdata!=null);
 		
