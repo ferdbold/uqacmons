@@ -81,7 +81,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		redCircle.setAlpha(0F);
 		
 		//Temporaire Tant que la Geolocalisation n'est pas implémentée
-		distanceToCloser = 50;
+		//distanceToCloser = 50;
 		KeepFlashing(); //Initialize the automatic Flashing based on distance
 		upDistance.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View vue) { distanceToCloser += 5;}
@@ -323,7 +323,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		Cursor profsdata = mDbHelper.getProfsData();
 		profsdata.moveToFirst();
 		while(profsdata!=null){
-			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
+			distanceToCloser=distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
 			if((distanceAvecProf<distanceToCloser) && (profsdata.getInt(profsdata.getColumnIndex("captured"))!=1)){
 				distanceToCloser=(int) distanceAvecProf;
 			}
