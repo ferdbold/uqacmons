@@ -56,6 +56,7 @@ public class RadarActivity extends Activity implements LocationListener {
 	private Float distanceToShow = 100F; // Si la distance est supérieure a ce chiffre, on ne voit rien
 	private Float slowestFlashSpeed = 10000F; //Time in milliseconds
 	private Float fastestFlashSpeed = 1000F; //Time in milliseconds
+	private Integer idprof=-1; // -1 est la valeur par défaut !
 	
 	
 	@Override
@@ -106,20 +107,25 @@ public class RadarActivity extends Activity implements LocationListener {
 		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
 			@Override
 			public void onClick(View vue) {
-				int id=1;  // CONSTANTE D'ID POUR PROFESSEUR POUR DES FINS DE TESTS 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
-				int captured=1;
-				mDbHelper = new NewProfsDbAdapter(ctx);
-				mDbHelper.createDatabase();
-				mDbHelper.open();
-		        mDbHelper.updateProf(id, captured);
-				Cursor profsdata = mDbHelper.getProfsData();
-				profsdata.moveToPosition(id-1); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
-				int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
-				String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
-				String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
-				profsdata.close();
-				mDbHelper.close();
-				GetUqacmon(p_id,p_name,p_type);
+				if(idprof>-1){
+					int captured=1;
+					mDbHelper = new NewProfsDbAdapter(ctx);
+					mDbHelper.createDatabase();
+					mDbHelper.open();
+					mDbHelper.updateProf(idprof, captured);
+					Cursor profsdata = mDbHelper.getProfsData();
+					profsdata.moveToPosition(idprof); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+				
+					int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
+					String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
+					String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
+					profsdata.close();
+					mDbHelper.close();
+					GetUqacmon(p_id,p_name,p_type);
+				}
+				else{
+					Toast.makeText(ctx, "Aucun uqacmon dans le secteur", Toast.LENGTH_LONG ).show();
+				}
 			}
 		});
 		releaseUqacmons.setOnClickListener(new View.OnClickListener() {
@@ -298,7 +304,28 @@ public class RadarActivity extends Activity implements LocationListener {
 		String msg = String.format(
 				getResources().getString(R.string.geoloc_update), latitude,
 				longitude, accuracy);
+		idprof=megaswitch(latitude, longitude, accuracy);
+		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+	}
+	
+	private int megaswitch(double latitude,double longitude,float accuracy){
+		int id;
+		mDbHelper = new NewProfsDbAdapter(this);
+		mDbHelper.createDatabase();
+		mDbHelper.open();
+		Cursor profsdata = mDbHelper.getProfsData();
+		profsdata.moveToFirst();
+		while(profsdata!=null){
+			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)||(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
+				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)||(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
+					id=profsdata.getPosition();
+					return(id);
+				}
+			}
+			profsdata.moveToNext();
+		}
+		return -1;
 	}
 
 	@Override
