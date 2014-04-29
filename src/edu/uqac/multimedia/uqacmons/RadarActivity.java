@@ -51,12 +51,12 @@ public class RadarActivity extends Activity implements LocationListener {
 	private TextView uqacmonUI_type;
 	
 	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
-	public Integer distanceToCloser; //Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
-	private Float distanceToCapture = 5F; // Si la distance est inférieure a ce chiffre, on capture l'UQACMON
-	private Float distanceToShow = 100F; // Si la distance est supérieure a ce chiffre, on ne voit rien
-	private Float slowestFlashSpeed = 10000F; //Time in milliseconds
-	private Float fastestFlashSpeed = 1000F; //Time in milliseconds
-	private Integer idprof=-1; // -1 est la valeur par défaut !
+	public Integer distanceToCloser; 			// Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
+	private Float distanceToCapture = 5F; 		// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
+	private Float distanceToShow = 100F; 		// Si la distance est supérieure a ce chiffre, on ne voit rien
+	private Float slowestFlashSpeed = 10000F; 	// plus petite vitesse possible de flash (milliseconds)
+	private Float fastestFlashSpeed = 500F; 	// plus grande vitesse possible de flash (milliseconds)
+	private Integer idprof=-1; 					// -1 est la valeur par défaut !
 	
 	
 	@Override
@@ -81,8 +81,9 @@ public class RadarActivity extends Activity implements LocationListener {
 		redCircle.setAlpha(0F);
 		
 		//Temporaire Tant que la Geolocalisation n'est pas implémentée
-		//distanceToCloser = 50;
+		distanceToCloser = 50; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
 		KeepFlashing(); //Initialize the automatic Flashing based on distance
+		//Bouton utilisé a fin de tests seulement : 
 		upDistance.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View vue) { distanceToCloser += 5;}
 		});
@@ -290,7 +291,10 @@ public class RadarActivity extends Activity implements LocationListener {
 		super.onResume();
 		lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 		if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
-			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
+			//Ici pourquoi on envoie "this" en 4iem parametre au lieu d'un LocationListener() ? 
+			//Est-ce parce qu'on implemente LocationListener dans la classe ?
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this); 
+		//Pourquoi ce code est ici deux fois ? Erreur ?
 		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this); //Changé "NETWORK_PROVIDER" pour "GPS_PROVIDER" sinon ça crash dans mon emulateur.
 	}
 
@@ -304,8 +308,8 @@ public class RadarActivity extends Activity implements LocationListener {
 	public void onLocationChanged(Location location) {
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
-		float accuracy = location.getAccuracy();
-
+		Float accuracy = location.getAccuracy();
+		flash.setText(accuracy.toString()); //Test pour voir l'accuracy a chaque update.
 		String msg = String.format(
 				getResources().getString(R.string.geoloc_update), latitude,
 				longitude, accuracy);
@@ -313,7 +317,8 @@ public class RadarActivity extends Activity implements LocationListener {
 		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 	}
-	
+	// À inclure Dépendant de l'accuracy du gps : la variable "DistanceToCapture" indique la distance minimum entre l'uqacmon et la personne
+	// Pour le capturer. Par contre, si la valeur d'accuracy est trop grande sa vaut peut etre pas la peine.
 	private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
 		float RayonTerre=6371.0F;
 		int distanceAvecProf;
