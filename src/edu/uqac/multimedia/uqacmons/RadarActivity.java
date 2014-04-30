@@ -60,6 +60,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private Float fastestFlashSpeed = 500F; 	// plus grande vitesse possible de flash (milliseconds)
 	private Integer idprof=-1; 					// -1 est la valeur par défaut !
 	
+	//Tab long/lat
+	private ProfPosition[] positionProfs;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +149,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 				mDbHelper.close();
 			}
 		});
+		
+		positionProfs = getPositionProfs();
 	}
 
 	@Override
@@ -386,5 +390,32 @@ public class RadarActivity extends Activity {// implements LocationListener {
 			profsdata.moveToNext();
 		}
 		return -1;
+	}
+	
+	private ProfPosition[] getPositionProfs() {
+		int i=0;
+		ProfPosition[] positions = new ProfPosition[9];
+		mDbHelper = new NewProfsDbAdapter(this);
+		mDbHelper.createDatabase();
+		mDbHelper.open();
+		Cursor profsdata = mDbHelper.getProfsData();
+		profsdata.moveToFirst();
+		while(!profsdata.isAfterLast()){
+			positions[i].id=profsdata.getInt(profsdata.getColumnIndex("id"));
+			positions[i].latitude=profsdata.getDouble(profsdata.getColumnIndex("latitude"));
+			positions[i].longitude=profsdata.getDouble(profsdata.getColumnIndex("longitude"));
+			i++;
+			profsdata.moveToNext();
+		}
+		
+		
+		return(positions);
+	}
+	
+	class ProfPosition {
+		public int id;
+		public double latitude;
+		public double longitude;
+	
 	}
 }
