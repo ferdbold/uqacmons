@@ -13,4 +13,5 @@
 	<string name="geoloc_update">Géoloc : Latitude = %1$s, Longitude = %2$s, avec une précision de %3$s mètres</string>
 	<string name="geoloc_status_update">Nouveau statut de %1$s : %2$s</string>
 	<string name="geoloc_enabled_update">%1$s enabled : %2$s</string>
+	<string name="nearest_uqacmon">UQACmon le plus proche: %1$s (%2$s mètres)</string>
 </resources>

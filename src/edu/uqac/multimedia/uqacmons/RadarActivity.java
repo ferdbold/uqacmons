@@ -55,13 +55,15 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private TextView uqacmonUI_type;
 	
 	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
-	public Integer distanceToCloser; 			// Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
-	private Float distanceToCapture = 5F; 		// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
-	private Float distanceToShow = 100F; 		// Si la distance est supérieure a ce chiffre, on ne voit rien
-	private Float slowestFlashSpeed = 10000F; 	// plus petite vitesse possible de flash (milliseconds)
-	private Float fastestFlashSpeed = 500F; 	// plus grande vitesse possible de flash (milliseconds)
-	private Integer nearestUqacmon = -1;
+	public double distanceToCloser = Double.POSITIVE_INFINITY;  // Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
+	private double distanceToCapture = 5; 						// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
+	private double distanceToShow = 100F; 						// Si la distance est supérieure a ce chiffre, on ne voit rien
+	private double slowestFlashSpeed = 10000; 					// plus petite vitesse possible de flash (milliseconds)
+	private double fastestFlashSpeed = 500; 					// plus grande vitesse possible de flash (milliseconds)
+	private Integer idprof = -1;
 	
+	//Tab long/lat
+	private ProfPosition[] positionProfs;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +151,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 				mDbHelper.close();
 			}
 		});
+		
+		positionProfs = getPositionProfs();
 	}
 
 	@Override
@@ -271,11 +275,11 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	   @Override
 	   public void run() { 
 	      //Calcule du temps avant le prochain Flash();
-		  Float timeNextFlash;
+		  Double timeNextFlash;
 		  timeNextFlash = (10F)*fastestFlashSpeed/(((distanceToShow - distanceToCloser)/(distanceToShow-distanceToCapture))*(slowestFlashSpeed / fastestFlashSpeed));
 	      if(timeNextFlash > slowestFlashSpeed) {
 	    	  timeNextFlash = slowestFlashSpeed;
-	    	  distanceToCloser = distanceToShow.intValue();
+	    	  distanceToCloser = distanceToShow;
 	      }
 	      if(timeNextFlash < fastestFlashSpeed) {
 	    	  timeNextFlash = fastestFlashSpeed; 
@@ -332,13 +336,17 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		double longitude = location.getLongitude();
 		Float accuracy = location.getAccuracy();
 		flash.setText(accuracy.toString()); //Test pour voir l'accuracy a chaque update.
-		String msg = String.format(
+		/*String msg = String.format(
 				getResources().getString(R.string.geoloc_update), latitude,
 				longitude, accuracy);
 		
-		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();*/
 		
 		refreshNearestUqacmon(location);
+		
+		String msg = String.format(
+				getResources().getString(R.string.nearest_uqacmon), this.distanceToCloser, this.idprof);
+		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 	}
 	
 	public void updateStatus(String provider, int status) {
@@ -349,18 +357,13 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		Toast.makeText(this, String.format(getResources().getString(R.string.geoloc_enabled_update), provider, isEnabled.toString()), Toast.LENGTH_LONG).show();
 	}
 	
-	private void refreshNearestUqacmon(Location location) {
-		ProfPosition[] data = new ProfPosition[] {
-				new ProfPosition(1, 14, 14),
-				new ProfPosition(2, 15, 15)
-		};
-		
+	private void refreshNearestUqacmon(Location location) {		
 		double distanceToBeat = Double.POSITIVE_INFINITY;
 		int nearestUqacmon = -1;
 		
-		for(int i = 0; i < data.length; i++) {
-			double deltaX = Math.abs(location.getLatitude() - data[i].latitude);
-			double deltaY = Math.abs(location.getLongitude() - data[i].longitude);
+		for(int i = 0; i < positionProfs.length; i++) {
+			double deltaX = Math.abs(location.getLatitude() - positionProfs[i].latitude);
+			double deltaY = Math.abs(location.getLongitude() - positionProfs[i].longitude);
 			
 			double dist = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
 			
@@ -371,7 +374,26 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		}
 		
 		this.distanceToCloser = (int)distanceToBeat;
-		this.nearestUqacmon = nearestUqacmon;
+		this.idprof = nearestUqacmon;
+	}
+	
+	private ProfPosition[] getPositionProfs() {
+		int i=0;
+		ProfPosition[] positions = new ProfPosition[9];
+		mDbHelper = new NewProfsDbAdapter(this);
+		mDbHelper.createDatabase();
+		mDbHelper.open();
+		Cursor profsdata = mDbHelper.getProfsData();
+		profsdata.moveToFirst();
+		while(!profsdata.isAfterLast()){
+			positions[i].id=profsdata.getInt(profsdata.getColumnIndex("id"));
+			positions[i].latitude=profsdata.getDouble(profsdata.getColumnIndex("latitude"));
+			positions[i].longitude=profsdata.getDouble(profsdata.getColumnIndex("longitude"));
+			i++;
+			profsdata.moveToNext();
+		}
+		
+		return(positions);
 	}
 	
 	class ProfPosition {
