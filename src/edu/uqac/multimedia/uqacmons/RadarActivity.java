@@ -1,5 +1,7 @@
 package edu.uqac.multimedia.uqacmons;
 
+import java.util.Iterator;
+
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -335,7 +337,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 				longitude, accuracy);
 		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-		//idprof=rechercheProfetDistance(latitude, longitude, accuracy);
+		
+		refreshNearestUqacmon(location);
 	}
 	
 	public void updateStatus(String provider, int status) {
@@ -346,9 +349,28 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		Toast.makeText(this, String.format(getResources().getString(R.string.geoloc_enabled_update), provider, isEnabled.toString()), Toast.LENGTH_LONG).show();
 	}
 	
+	private void refreshNearestUqacmon(Location location) {
+		ProfPosition[] data = new ProfPosition[] {
+				new ProfPosition(1, 14, 14),
+				new ProfPosition(2, 15, 15)
+		};
+		
+		double distanceToBeat = Double.POSITIVE_INFINITY;
+		
+		for(int i = 0; i < data.length; i++) {
+			double deltaX = Math.abs(location.getLatitude() - data[i].latitude);
+			double deltaY = Math.abs(location.getLongitude() - data[i].longitude);
+			
+			distanceToBeat = Math.min(distanceToBeat, Math.sqrt(deltaX*deltaX + deltaY*deltaY));
+		}
+		
+		this.distanceToCloser = (int)distanceToBeat;
+		// @todo set nearest upacmon
+	}
+	
 	// À inclure Dépendant de l'accuracy du gps : la variable "DistanceToCapture" indique la distance minimum entre l'uqacmon et la personne
 	// Pour le capturer. Par contre, si la valeur d'accuracy est trop grande sa vaut peut etre pas la peine.
-	private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
+	/*private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
 		float RayonTerre=6371.0F;
 		int distanceAvecProf;
 		Integer id;
@@ -376,7 +398,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 					id=profsdata.getPosition();
 					return(id);
 				}
-			}*/
+			}
 			if(distanceToCloser<=(distanceToCapture)+accuracy){
 				id=profsdata.getPosition();
 				String msg = ("Captured Uqacmon : " + id.toString());
@@ -386,5 +408,17 @@ public class RadarActivity extends Activity {// implements LocationListener {
 			profsdata.moveToNext();
 		}
 		return -1;
-	}
+	}*/
+	
+	class ProfPosition {
+		public int id;
+		public double latitude;
+		public double longitude;
+		
+		public ProfPosition(int id, double latitude, double longitude) {
+			this.id = id;
+			this.latitude = latitude;
+			this.longitude = longitude;
+		}
+	};
 }
