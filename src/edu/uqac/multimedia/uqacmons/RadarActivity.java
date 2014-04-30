@@ -1,5 +1,6 @@
 package edu.uqac.multimedia.uqacmons;
 
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RadarActivity extends Activity implements LocationListener {
+public class RadarActivity extends Activity {// implements LocationListener {
 
 	private ImageButton uqacpedia;
 	private ImageView redBip;
@@ -38,6 +39,7 @@ public class RadarActivity extends Activity implements LocationListener {
 	private Context ctx;
 	private NewProfsDbAdapter mDbHelper;
 	private LocationManager lm;
+	private LocationListener ll;
 	
 	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
 	private TextView testview;
@@ -289,23 +291,41 @@ public class RadarActivity extends Activity implements LocationListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-		if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
-			//Ici pourquoi on envoie "this" en 4iem parametre au lieu d'un LocationListener() ? 
-			//Est-ce parce qu'on implemente LocationListener dans la classe ?
-			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this); 
-		//Pourquoi ce code est ici deux fois ? Erreur ?
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this); //Changé "NETWORK_PROVIDER" pour "GPS_PROVIDER" sinon ça crash dans mon emulateur.
-	}
+		
+		// Acquire a reference    dto the system Location Manager
+		lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		updateLocation(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+		
+		// Define a listener that responds to location updates
+		ll = new LocationListener() {
+		    public void onLocationChanged(Location location) {
+		    	updateLocation(location);
+		    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		lm.removeUpdates(this);
-	}
+		    public void onStatusChanged(String provider, int status, Bundle extras) {
+		    	updateStatus(provider, status);
+		    }
 
+		    public void onProviderEnabled(String provider) {
+		    	updateProviderEnabled(provider, true);
+		    }
+
+		    public void onProviderDisabled(String provider) {
+		    	updateProviderEnabled(provider, false);
+		    }
+		  };
+
+		// Register the listener with the Location Manager to receive location updates
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, ll);
+	}
+	
 	@Override
-	public void onLocationChanged(Location location) {
+	protected void onStop() {
+		super.onStop();
+		lm.removeUpdates(ll);
+	}
+	
+	public void updateLocation(Location location) {
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
 		Float accuracy = location.getAccuracy();
@@ -315,8 +335,17 @@ public class RadarActivity extends Activity implements LocationListener {
 				longitude, accuracy);
 		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-		idprof=rechercheProfetDistance(latitude, longitude, accuracy);
+		//idprof=rechercheProfetDistance(latitude, longitude, accuracy);
 	}
+	
+	public void updateStatus(String provider, int status) {
+		Toast.makeText(this, String.format(getResources().getString(R.string.geoloc_status_update), provider, status), Toast.LENGTH_LONG).show();
+	}
+	
+	public void updateProviderEnabled(String provider, Boolean isEnabled) {
+		Toast.makeText(this, String.format(getResources().getString(R.string.geoloc_enabled_update), provider, isEnabled.toString()), Toast.LENGTH_LONG).show();
+	}
+	
 	// À inclure Dépendant de l'accuracy du gps : la variable "DistanceToCapture" indique la distance minimum entre l'uqacmon et la personne
 	// Pour le capturer. Par contre, si la valeur d'accuracy est trop grande sa vaut peut etre pas la peine.
 	private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
@@ -358,35 +387,4 @@ public class RadarActivity extends Activity implements LocationListener {
 		}
 		return -1;
 	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		String msg = String.format(getResources().getString(R.string.gps_desactive), provider);
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		String msg = String.format(getResources().getString(R.string.gps_active), provider);
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		String newStatus = "";
-		switch (status) {
-			case LocationProvider.OUT_OF_SERVICE:
-				newStatus = "OUT_OF_SERVICE";
-				break;
-			case LocationProvider.TEMPORARILY_UNAVAILABLE:
-				newStatus = "TEMPORARILY_UNAVAILABLE";
-				break;
-			case LocationProvider.AVAILABLE:
-				newStatus = "AVAILABLE";
-				break;
-		}
-		String msg = String.format(getResources().getString(R.string.gps_desactive), provider, newStatus);
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	}
-	
 }
