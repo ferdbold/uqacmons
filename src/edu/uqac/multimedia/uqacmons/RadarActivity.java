@@ -316,7 +316,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		  };
 
 		// Register the listener with the Location Manager to receive location updates
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, ll);
 	}
 	
 	@Override
@@ -333,9 +333,9 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		String msg = String.format(
 				getResources().getString(R.string.geoloc_update), latitude,
 				longitude, accuracy);
-		idprof=0;//rechercheProfetDistance(latitude, longitude, accuracy);
 		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		//idprof=rechercheProfetDistance(latitude, longitude, accuracy);
 	}
 	
 	public void updateStatus(String provider, int status) {
@@ -351,7 +351,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
 		float RayonTerre=6371.0F;
 		int distanceAvecProf;
-		int id;
+		Integer id;
 		mDbHelper = new NewProfsDbAdapter(this);
 		mDbHelper.createDatabase();
 		mDbHelper.open();
@@ -367,15 +367,21 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		while(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0 && profsdata!=null);
 		
 		while(profsdata!=null){
-			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
+			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude")))))+accuracy);
 			if((distanceAvecProf<distanceToCloser) && (profsdata.getInt(profsdata.getColumnIndex("captured"))!=1)){
 				distanceToCloser= distanceAvecProf;
-			}
-			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
-				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
+			}/*
+			if ((latitude < profsdata.getDouble(profsdata.getColumnIndex("latitude")))&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))) ){
+				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude")))&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude")))){
 					id=profsdata.getPosition();
 					return(id);
 				}
+			}*/
+			if(distanceToCloser<=(distanceToCapture)+accuracy){
+				id=profsdata.getPosition();
+				String msg = ("Captured Uqacmon : " + id.toString());
+				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+				return(id);
 			}
 			profsdata.moveToNext();
 		}
