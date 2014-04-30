@@ -32,14 +32,13 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private ImageView redBip;
 	private ImageView redCircle;
 	private Button flash;
-	private Button getUqacmon;
 	private Button releaseUqacmons;
 	private Context ctx;
 	private NewProfsDbAdapter mDbHelper;
 	private LocationManager lm;
 	private LocationListener ll;
 	
-	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
+	//UtilisŽ pour tester la vitesse du flash (trop de lag dans l'émulateur)
 	private TextView testview;
 	
 	private LayoutInflater getPopupLayout;
@@ -48,7 +47,6 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private TextView uqacmonUI_name;
 	private TextView uqacmonUI_type;
 	
-	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
 	public Double distanceToCloser = Double.POSITIVE_INFINITY;  // Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
 	private double distanceToCapture = 1; 						// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
 	private double distanceToShow = 5; 						// Si la distance est supérieure a ce chiffre, on ne voit rien
@@ -78,7 +76,6 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		redCircle.setAlpha(0F);
 		
 		//Temporaire Tant que la Geolocalisation n'est pas implémentée
-		distanceToCloser = 50.0; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
 		KeepFlashing(); //Initialize the automatic Flashing based on distance
 		
 		uqacpedia.setOnClickListener(new View.OnClickListener() { //bouton pour changer d'écran
@@ -88,12 +85,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 				startActivity(i);
 			}
 		});
-		/*flash.setOnClickListener(new View.OnClickListener() { // bouton faire flasher le bouton (TEST)
-			@Override
-			public void onClick(View vue) {
-				Flash();
-			}
-		});*/
+		
 		releaseUqacmons.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -320,7 +312,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 			double dist = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
 			
 			if (distanceToBeat > dist) {
-				nearestUqacmon = i;
+				nearestUqacmon = i+1;
 				distanceToBeat = dist;
 			}
 		}
@@ -354,7 +346,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		mDbHelper.open();
 		Cursor profsdata = mDbHelper.getProfsData();
 		if(idprof>-1){
-			profsdata.moveToPosition(idprof-1); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+			profsdata.moveToPosition(idprof); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
 			if(profsdata.getInt(profsdata.getColumnIndex("captured"))!=1){
 				int captured=1;
 				mDbHelper.updateProf(idprof, captured);
