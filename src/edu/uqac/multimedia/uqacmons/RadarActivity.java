@@ -41,8 +41,6 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	
 	//Utilisé pour tester la vitesse du flash (trop de lag dans l'émulateur)
 	private TextView testview;
-	private Button upDistance;
-	private Button downDistance;
 	
 	private LayoutInflater getPopupLayout;
 	private View getPopupLayoutView;
@@ -51,7 +49,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private TextView uqacmonUI_type;
 	
 	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
-	public double distanceToCloser = Double.POSITIVE_INFINITY;  // Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
+	public Double distanceToCloser = Double.POSITIVE_INFINITY;  // Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
 	private double distanceToCapture = 1; 						// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
 	private double distanceToShow = 5; 						// Si la distance est supérieure a ce chiffre, on ne voit rien
 	private double slowestFlashSpeed = 10000; 					// plus petite vitesse possible de flash (milliseconds)
@@ -70,12 +68,9 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		redBip = (ImageView)findViewById(R.id.redBip);
 		redCircle = (ImageView)findViewById(R.id.redCircle);
 		flash = (Button)findViewById(R.id.b_flash);
-		getUqacmon = (Button)findViewById(R.id.b_get);
 		releaseUqacmons = (Button)findViewById(R.id.b_release);
 		
 		testview = (TextView)findViewById(R.id.TESTVIEW);
-		upDistance = (Button)findViewById(R.id.b_up);
-		downDistance = (Button)findViewById(R.id.b_down);
 		
 		ctx = this.getApplicationContext();
 		//Set variables
@@ -83,16 +78,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		redCircle.setAlpha(0F);
 		
 		//Temporaire Tant que la Geolocalisation n'est pas implémentée
-		distanceToCloser = 50; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
+		distanceToCloser = 50.0; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
 		KeepFlashing(); //Initialize the automatic Flashing based on distance
-		//Bouton utilisé a fin de tests seulement : 
-		upDistance.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View vue) { distanceToCloser += 5;}
-		});
-		downDistance.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View vue) { distanceToCloser -= 5;}
-		});
-		
 		
 		uqacpedia.setOnClickListener(new View.OnClickListener() { //bouton pour changer d'écran
 			@Override
@@ -101,18 +88,12 @@ public class RadarActivity extends Activity {// implements LocationListener {
 				startActivity(i);
 			}
 		});
-		flash.setOnClickListener(new View.OnClickListener() { // bouton faire flasher le bouton (TEST)
+		/*flash.setOnClickListener(new View.OnClickListener() { // bouton faire flasher le bouton (TEST)
 			@Override
 			public void onClick(View vue) {
 				Flash();
 			}
-		});
-		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
-			@Override
-			public void onClick(View vue) {
-				catchUqacmon();
-			}
-		});
+		});*/
 		releaseUqacmons.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -306,6 +287,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	
 	public void updateLocation(Location location) {		
 		refreshNearestUqacmon(location);
+		flash.setText(distanceToCloser.toString());
 		
 		if (this.distanceToCloser <= this.distanceToCapture) {
 			catchUqacmon();

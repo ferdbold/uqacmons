@@ -28,44 +28,19 @@
     
     <Button
         android:id="@+id/b_flash"
-        android:layout_width="40dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Flash"
         android:textSize = "10dp"
         android:layout_toRightOf = "@+id/b_uqacpedia"
         />
     <Button
-        android:id="@+id/b_get"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:text="GET" 
-        android:textSize = "10dp"
-        android:layout_toRightOf = "@+id/b_flash"
-        />
-    <Button
         android:id="@+id/b_release"
-        android:layout_width="40dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Release" 
         android:textSize = "10dp"
-        android:layout_toRightOf = "@+id/b_get"
-        />
-     <Button
-        android:id="@+id/b_up"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:text="U" 
-        android:textSize = "10dp"
-        android:layout_toRightOf = "@+id/b_release"
-        />
-    
-      <Button
-        android:id="@+id/b_down"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:text="D" 
-        android:textSize = "10dp"
-        android:layout_toRightOf = "@+id/b_up"
+        android:layout_toRightOf = "@+id/b_flash"
         />
      
 
@@ -107,8 +82,8 @@
         android:id="@+id/TESTVIEW"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/b_down"
-        android:layout_toRightOf="@+id/b_down"
+        android:layout_alignBottom="@+id/b_release"
+        android:layout_toRightOf="@+id/b_release"
         android:text="TextView" />
 
 </RelativeLayout>
