@@ -81,7 +81,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		redCircle.setAlpha(0F);
 		
 		//Temporaire Tant que la Geolocalisation n'est pas implémentée
-		distanceToCloser = 50; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
+		//distanceToCloser = 50; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
 		KeepFlashing(); //Initialize the automatic Flashing based on distance
 		//Bouton utilisé a fin de tests seulement : 
 		upDistance.setOnClickListener(new View.OnClickListener() {
@@ -313,16 +313,16 @@ public class RadarActivity extends Activity implements LocationListener {
 		String msg = String.format(
 				getResources().getString(R.string.geoloc_update), latitude,
 				longitude, accuracy);
-		idprof=rechercheProfetDistance(latitude, longitude, accuracy);
 		
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		idprof=rechercheProfetDistance(latitude, longitude, accuracy);
 	}
 	// À inclure Dépendant de l'accuracy du gps : la variable "DistanceToCapture" indique la distance minimum entre l'uqacmon et la personne
 	// Pour le capturer. Par contre, si la valeur d'accuracy est trop grande sa vaut peut etre pas la peine.
 	private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
 		float RayonTerre=6371.0F;
 		int distanceAvecProf;
-		int id;
+		Integer id;
 		mDbHelper = new NewProfsDbAdapter(this);
 		mDbHelper.createDatabase();
 		mDbHelper.open();
@@ -338,15 +338,21 @@ public class RadarActivity extends Activity implements LocationListener {
 		while(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0 && profsdata!=null);
 		
 		while(profsdata!=null){
-			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
+			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude")))))+accuracy);
 			if((distanceAvecProf<distanceToCloser) && (profsdata.getInt(profsdata.getColumnIndex("captured"))!=1)){
 				distanceToCloser= distanceAvecProf;
-			}
-			if ((latitude <profsdata.getDouble(profsdata.getColumnIndex("latitude"))+accuracy)&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))-accuracy)){
-				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude"))+accuracy)&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude"))-accuracy)){
+			}/*
+			if ((latitude < profsdata.getDouble(profsdata.getColumnIndex("latitude")))&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))) ){
+				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude")))&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude")))){
 					id=profsdata.getPosition();
 					return(id);
 				}
+			}*/
+			if(distanceToCloser<=(distanceToCapture)+accuracy){
+				id=profsdata.getPosition();
+				String msg = ("Captured Uqacmon : " + id.toString());
+				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+				return(id);
 			}
 			profsdata.moveToNext();
 		}
