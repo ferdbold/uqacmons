@@ -376,7 +376,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 			}
 		}
 		
-		this.distanceToCloser = (int)distanceToBeat;
+		this.distanceToCloser = (distanceToBeat * 10000);
 		this.idprof = nearestUqacmon;
 	}
 	
