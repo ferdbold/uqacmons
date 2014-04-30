@@ -60,7 +60,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	private Float distanceToShow = 100F; 		// Si la distance est supérieure a ce chiffre, on ne voit rien
 	private Float slowestFlashSpeed = 10000F; 	// plus petite vitesse possible de flash (milliseconds)
 	private Float fastestFlashSpeed = 500F; 	// plus grande vitesse possible de flash (milliseconds)
-	private Integer idprof=-1; 					// -1 est la valeur par défaut !
+	private Integer nearestUqacmon = -1;
 	
 	
 	@Override
@@ -356,59 +356,23 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		};
 		
 		double distanceToBeat = Double.POSITIVE_INFINITY;
+		int nearestUqacmon = -1;
 		
 		for(int i = 0; i < data.length; i++) {
 			double deltaX = Math.abs(location.getLatitude() - data[i].latitude);
 			double deltaY = Math.abs(location.getLongitude() - data[i].longitude);
 			
-			distanceToBeat = Math.min(distanceToBeat, Math.sqrt(deltaX*deltaX + deltaY*deltaY));
+			double dist = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+			
+			if (distanceToBeat > dist) {
+				nearestUqacmon = i;
+				distanceToBeat = dist;
+			}
 		}
 		
 		this.distanceToCloser = (int)distanceToBeat;
-		// @todo set nearest upacmon
+		this.nearestUqacmon = nearestUqacmon;
 	}
-	
-	// À inclure Dépendant de l'accuracy du gps : la variable "DistanceToCapture" indique la distance minimum entre l'uqacmon et la personne
-	// Pour le capturer. Par contre, si la valeur d'accuracy est trop grande sa vaut peut etre pas la peine.
-	/*private int rechercheProfetDistance(double latitude,double longitude,float accuracy){
-		float RayonTerre=6371.0F;
-		int distanceAvecProf;
-		Integer id;
-		mDbHelper = new NewProfsDbAdapter(this);
-		mDbHelper.createDatabase();
-		mDbHelper.open();
-		Cursor profsdata = mDbHelper.getProfsData();
-		profsdata.moveToFirst();
-		
-		do {
-			distanceToCloser= (int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude"))))));
-			if(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0){
-				profsdata.moveToNext();
-			}
-		}
-		while(profsdata.getInt(profsdata.getColumnIndex("captured"))!=0 && profsdata!=null);
-		
-		while(profsdata!=null){
-			distanceAvecProf=(int) (RayonTerre*Math.acos(Math.sin(latitude)*Math.sin(profsdata.getColumnIndex("latitude")+Math.cos(latitude)*Math.cos(profsdata.getColumnIndex("latitude")*Math.cos(longitude-profsdata.getColumnIndex("longitude")))))+accuracy);
-			if((distanceAvecProf<distanceToCloser) && (profsdata.getInt(profsdata.getColumnIndex("captured"))!=1)){
-				distanceToCloser= distanceAvecProf;
-			}/*
-			if ((latitude < profsdata.getDouble(profsdata.getColumnIndex("latitude")))&&(latitude > profsdata.getDouble(profsdata.getColumnIndex("latitude"))) ){
-				if ((longitude <profsdata.getDouble(profsdata.getColumnIndex("longitude")))&&(longitude > profsdata.getDouble(profsdata.getColumnIndex("longitude")))){
-					id=profsdata.getPosition();
-					return(id);
-				}
-			}
-			if(distanceToCloser<=(distanceToCapture)+accuracy){
-				id=profsdata.getPosition();
-				String msg = ("Captured Uqacmon : " + id.toString());
-				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-				return(id);
-			}
-			profsdata.moveToNext();
-		}
-		return -1;
-	}*/
 	
 	class ProfPosition {
 		public int id;
