@@ -81,7 +81,7 @@ public class RadarActivity extends Activity implements LocationListener {
 		redCircle.setAlpha(0F);
 		
 		//Temporaire Tant que la Geolocalisation n'est pas implémentée
-		//distanceToCloser = 50; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
+		distanceToCloser = 50; // <-- A ENLEVER LORSQUE SUR UNE VRAI MACHINE, sinon crash sur VM
 		KeepFlashing(); //Initialize the automatic Flashing based on distance
 		//Bouton utilisé a fin de tests seulement : 
 		upDistance.setOnClickListener(new View.OnClickListener() {
@@ -350,8 +350,8 @@ public class RadarActivity extends Activity implements LocationListener {
 			}*/
 			if(distanceToCloser<=(distanceToCapture)+accuracy){
 				id=profsdata.getPosition();
-				String msg = ("Captured Uqacmon : " + id.toString());
-				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+				//String msg = ("Captured Uqacmon : " + id.toString());
+				//Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 				return(id);
 			}
 			profsdata.moveToNext();
