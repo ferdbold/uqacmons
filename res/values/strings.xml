@@ -10,5 +10,7 @@
     <string name="GetUIType">TYPE</string>
 	<string name="gps_active">Le GPS est maintenant activé</string>
 	<string name="gps_desactive">Le GPS est maintenant désactivé</string>
-	<string name="geoloc_update">New Location : Latitude = %1$s, Longitude = %2$s, avec une précision de %3$s mètres</string>
+	<string name="geoloc_update">Géoloc : Latitude = %1$s, Longitude = %2$s, avec une précision de %3$s mètres</string>
+	<string name="geoloc_status_update">Nouveau statut de %1$s : %2$s</string>
+	<string name="geoloc_enabled_update">%1$s enabled : %2$s</string>
 </resources>
