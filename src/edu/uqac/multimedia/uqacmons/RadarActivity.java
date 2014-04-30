@@ -1,12 +1,8 @@
 package edu.uqac.multimedia.uqacmons;
 
-import java.util.Iterator;
-
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
@@ -56,8 +52,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 	
 	// Les distances sont pour le moment arbitraire, A ajuster une fois la géolocalisation ajoutée
 	public double distanceToCloser = Double.POSITIVE_INFINITY;  // Distance entre l'utilisateur et le plus proche Uqacmon non capturé.
-	private double distanceToCapture = 5; 						// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
-	private double distanceToShow = 100F; 						// Si la distance est supérieure a ce chiffre, on ne voit rien
+	private double distanceToCapture = 1; 						// Si la distance est inférieure a ce chiffre, on capture l'UQACMON
+	private double distanceToShow = 5; 						// Si la distance est supérieure a ce chiffre, on ne voit rien
 	private double slowestFlashSpeed = 10000; 					// plus petite vitesse possible de flash (milliseconds)
 	private double fastestFlashSpeed = 500; 					// plus grande vitesse possible de flash (milliseconds)
 	private Integer idprof = -1;
@@ -114,30 +110,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		getUqacmon.setOnClickListener(new View.OnClickListener() { // bouton pour obtenir un uqacmon (TEST)
 			@Override
 			public void onClick(View vue) {
-				mDbHelper = new NewProfsDbAdapter(ctx);
-				mDbHelper.createDatabase();
-				mDbHelper.open();
-				Cursor profsdata = mDbHelper.getProfsData();
-				if(idprof>-1){
-					profsdata.moveToPosition(idprof); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
-					if(profsdata.getInt(profsdata.getColumnIndex("captured"))!=1){
-						int captured=1;
-						mDbHelper.updateProf(idprof, captured);
-						int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
-						String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
-						String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
-						profsdata.close();
-						mDbHelper.close();
-
-						GetUqacmon(p_id,p_name,p_type);
-					}
-					else{
-						Toast.makeText(ctx, "L'uqacmon a déjà été capturé", Toast.LENGTH_LONG).show();
-					}
-				}
-				else{
-					Toast.makeText(ctx, "Aucun uqacmon dans le secteur", Toast.LENGTH_LONG ).show();
-				}
+				catchUqacmon();
 			}
 		});
 		releaseUqacmons.setOnClickListener(new View.OnClickListener() {
@@ -215,7 +188,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		uqacmonUI_type.setText(type);
 
 	    builder.setView(getPopupLayoutView);
-	    builder.setTitle("YOU CAPTURED A WILD UQACMON !");
+	    builder.setTitle(getResources().getString(R.string.uqacmon_captured));
 	    builder.setPositiveButton("VIEW", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {	        	
 	            openUqacmonpedia();
@@ -331,18 +304,12 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		lm.removeUpdates(ll);
 	}
 	
-	public void updateLocation(Location location) {
-		double latitude = location.getLatitude();
-		double longitude = location.getLongitude();
-		Float accuracy = location.getAccuracy();
-		flash.setText(accuracy.toString()); //Test pour voir l'accuracy a chaque update.
-		/*String msg = String.format(
-				getResources().getString(R.string.geoloc_update), latitude,
-				longitude, accuracy);
-		
-		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();*/
-		
+	public void updateLocation(Location location) {		
 		refreshNearestUqacmon(location);
+		
+		if (this.distanceToCloser <= this.distanceToCapture) {
+			catchUqacmon();
+		}
 		
 		String msg = String.format(
 				getResources().getString(R.string.nearest_uqacmon), this.idprof, this.distanceToCloser);
@@ -392,15 +359,38 @@ public class RadarActivity extends Activity {// implements LocationListener {
 			positions[i] = new ProfPosition(profsdata.getPosition(),
 											profsdata.getDouble(profsdata.getColumnIndex("latitude")),
 											profsdata.getDouble(profsdata.getColumnIndex("longitude")));
-							
-			/*positions[i].id=profsdata.getInt(profsdata.getColumnIndex("KEY_ID"));
-			positions[i].latitude=profsdata.getDouble(profsdata.getColumnIndex("latitude"));
-			positions[i].longitude=profsdata.getDouble(profsdata.getColumnIndex("longitude"));*/
 			i++;
 			profsdata.moveToNext();
 		}
 		
 		return(positions);
+	}
+	
+	public void catchUqacmon() {
+		mDbHelper = new NewProfsDbAdapter(ctx);
+		mDbHelper.createDatabase();
+		mDbHelper.open();
+		Cursor profsdata = mDbHelper.getProfsData();
+		if(idprof>-1){
+			profsdata.moveToPosition(idprof-1); // On bouge le cursor de la db sur une position, par convention, 1=djamal, 2=Verreault, 3=Eric, 4=Bob,5=Pierre
+			if(profsdata.getInt(profsdata.getColumnIndex("captured"))!=1){
+				int captured=1;
+				mDbHelper.updateProf(idprof, captured);
+				int p_id =  profsdata.getInt(profsdata.getColumnIndexOrThrow("image"));
+				String p_name = profsdata.getString(profsdata.getColumnIndexOrThrow("name"));
+				String p_type = profsdata.getString(profsdata.getColumnIndexOrThrow("bio"));
+				profsdata.close();
+				mDbHelper.close();
+
+				GetUqacmon(p_id,p_name,p_type);
+			}
+			else {
+				Toast.makeText(ctx, getResources().getString(R.string.uqacmon_already_caught), Toast.LENGTH_LONG).show();
+			}
+		}
+		else{
+			Toast.makeText(ctx, "Aucun uqacmon dans le secteur", Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	class ProfPosition {

@@ -114,7 +114,7 @@ public class UqacmonPedia extends Activity {
         startActivity(i);
 	}
 	
-	public void CreateUqacmonList(){ // A FAIRE : Crée la liste a afficher dans l'uqacmonpedia
+	public void CreateUqacmonList() {
 		mDbHelper = new NewProfsDbAdapter(this);
 		mDbHelper.createDatabase();
 		mDbHelper.open();

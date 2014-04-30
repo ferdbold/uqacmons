@@ -14,4 +14,6 @@
 	<string name="geoloc_status_update">Nouveau statut de %1$s : %2$s</string>
 	<string name="geoloc_enabled_update">%1$s enabled : %2$s</string>
 	<string name="nearest_uqacmon">UQACmon le plus proche: %1$s (%2$s delta)</string>
+	<string name="uqacmon_already_caught">L\'UQACmon a déjà été capturé</string>
+	<string name="uqacmon_captured">UQACmon capturé!</string>
 </resources>
