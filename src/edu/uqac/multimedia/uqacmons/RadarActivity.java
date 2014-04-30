@@ -322,7 +322,7 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		  };
 
 		// Register the listener with the Location Manager to receive location updates
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, ll);
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, ll);
 	}
 	
 	@Override
@@ -345,8 +345,8 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		refreshNearestUqacmon(location);
 		
 		String msg = String.format(
-				getResources().getString(R.string.nearest_uqacmon), this.distanceToCloser, this.idprof);
-		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+				getResources().getString(R.string.nearest_uqacmon), this.idprof, this.distanceToCloser);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
 	
 	public void updateStatus(String provider, int status) {
@@ -362,8 +362,11 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		int nearestUqacmon = -1;
 		
 		for(int i = 0; i < positionProfs.length; i++) {
-			double deltaX = Math.abs(location.getLatitude() - positionProfs[i].latitude);
-			double deltaY = Math.abs(location.getLongitude() - positionProfs[i].longitude);
+			double lat = location.getLatitude(), lon = location.getLongitude();
+			double profLat = positionProfs[i].latitude, profLon = positionProfs[i].longitude;
+			
+			double deltaX = Math.abs(profLat - lat);
+			double deltaY = Math.abs(profLon - lon);
 			
 			double dist = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
 			
@@ -386,9 +389,13 @@ public class RadarActivity extends Activity {// implements LocationListener {
 		Cursor profsdata = mDbHelper.getProfsData();
 		profsdata.moveToFirst();
 		while(!profsdata.isAfterLast()){
-			positions[i].id=profsdata.getInt(profsdata.getColumnIndex("id"));
+			positions[i] = new ProfPosition(profsdata.getPosition(),
+											profsdata.getDouble(profsdata.getColumnIndex("latitude")),
+											profsdata.getDouble(profsdata.getColumnIndex("longitude")));
+							
+			/*positions[i].id=profsdata.getInt(profsdata.getColumnIndex("KEY_ID"));
 			positions[i].latitude=profsdata.getDouble(profsdata.getColumnIndex("latitude"));
-			positions[i].longitude=profsdata.getDouble(profsdata.getColumnIndex("longitude"));
+			positions[i].longitude=profsdata.getDouble(profsdata.getColumnIndex("longitude"));*/
 			i++;
 			profsdata.moveToNext();
 		}
